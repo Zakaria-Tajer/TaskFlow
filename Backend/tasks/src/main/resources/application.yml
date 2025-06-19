@@ -1,0 +1,14 @@
+
+spring:
+  application:
+    name: Tasks
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/tasksDB
+    username: user
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
