@@ -1,17 +1,21 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { userSignIn, type AuthResponse, type UserSignIn } from "../api/user";
 import { Link, useNavigate } from "react-router";
+import { setCookie } from "../utils/CookieUtil";
 
 function Login() {
   const navigate = useNavigate();
+
+  const queryClient = useQueryClient();
 
   const { mutate, error } = useMutation({
     mutationFn: userSignIn,
     onSuccess: (data: AuthResponse) => {
       console.log("✅ Signup success:", data.message);
+      setCookie(data.token);
 
-      navigate("/home");
+      queryClient.invalidateQueries({ queryKey: ["authUser"] });
     },
     onError: (data: AuthResponse) => {
       console.log("Failed:", data.message);
@@ -27,6 +31,8 @@ function Login() {
     e.preventDefault();
 
     mutate({ email: loginData.email, password: loginData.password });
+
+    navigate("/home");
   };
 
   return (

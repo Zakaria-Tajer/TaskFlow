@@ -1,3 +1,5 @@
+import { getCookie } from "../utils/CookieUtil";
+
 export type UserSignIn = {
   id?: number;
   email: string;
@@ -58,8 +60,10 @@ export const userSignUp = async (user: UserSignUp) => {
 
 export const isAuthenticated = async () => {
   const res = await fetch(`${baseURL}/auth/authenticate`, {
+    method: "GET",
+    credentials: "include",
     headers: {
-      Authorization: `eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6YXR0LnRhamVyQGdtYWlsLmNvbSIsInJvbGVzIjpbIlVzZXIiXSwiaWF0IjoxNzUwMzY1ODUxLCJleHAiOjE3NTA1NDU4NTF9.CoRfBB69S0wu8SPtE9u-KE_m2Kqhprhy5SeJyLh6Kjo`,
+      Authorization: getCookie(),
     },
   });
 

@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { userSignUp, type UserSignUp } from "../api/user";
 import { Link, useNavigate } from "react-router";
+import { setCookie } from "../utils/CookieUtil";
 
 type AuthResponse = {
   timestamp: string;
@@ -18,6 +19,7 @@ function Register() {
 
     onSuccess: (data: AuthResponse) => {
       console.log("✅ Signup success:", data.message);
+      setCookie(data.token);
 
       navigate("/home");
     },
