@@ -49,7 +49,7 @@ A RESTful backend API for managing tasks with secure user authentication. Built 
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/taskflow.git
+git clone https://github.com/Zakaria-Tajer/TaskFlow.git
 cd taskflow
 
 # Build the project
