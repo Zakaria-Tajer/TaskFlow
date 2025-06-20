@@ -56,12 +56,18 @@ export const userSignUp = async (user: UserSignUp) => {
   return res.json();
 };
 
-// export const geAllUsers = async () => {
-//   const res = await fetch(`${baseURL}/tasks/all`);
+export const isAuthenticated = async () => {
+  const res = await fetch(`${baseURL}/auth/authenticate`, {
+    headers: {
+      Authorization: `eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6YXR0LnRhamVyQGdtYWlsLmNvbSIsInJvbGVzIjpbIlVzZXIiXSwiaWF0IjoxNzUwMzY1ODUxLCJleHAiOjE3NTA1NDU4NTF9.CoRfBB69S0wu8SPtE9u-KE_m2Kqhprhy5SeJyLh6Kjo`,
+    },
+  });
 
-//   if (!res.ok) {
-//     const error = await res.json();
-//     throw new Error(error.message || "Failed to Sign Up");
-//   }
-//   return res.json();
-// };
+  if (!res.ok) {
+    const error = await res.json();
+    console.log(error);
+
+    throw new Error(error.message || "Failed to Authenticate");
+  }
+  return res.ok;
+};
