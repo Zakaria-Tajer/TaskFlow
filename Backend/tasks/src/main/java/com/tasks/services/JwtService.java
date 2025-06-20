@@ -2,10 +2,12 @@ package com.tasks.services;
 
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.boot.json.JsonParseException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 @Service
 public class JwtService {
 
+
+//    Remember Adding secret key in .env
     private static final String SECRET_KEY = "2A462D4A614E645267556A586E3272357538782F413F4428472B4B6250655368";
 
     public String extractUsername(String token) {
@@ -38,7 +42,7 @@ public class JwtService {
 
         String token = generateToken(new HashMap<>(), userDetails, roles);
 
-        return "Bearer " + token;
+        return token;
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails, Set<String> roles) {
@@ -66,7 +70,7 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) throws JwtException {
         return Jwts
                 .parserBuilder()
                 .setSigningKey(getSigningKey())

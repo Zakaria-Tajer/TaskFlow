@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
 
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/tasks/**").authenticated()
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/tasks/**").permitAll()
                         .anyRequest().permitAll())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).authenticationProvider(authenticationProvider)
                 .sessionManagement(smc -> smc

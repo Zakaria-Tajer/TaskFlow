@@ -9,4 +9,5 @@ public interface UserService {
     String SignUp(UserDto userDto);
     String SignIn(UserLoginDto loginDto);
     User getUserByEmail(String email);
+    Boolean isAuthenticated(String token);
 }

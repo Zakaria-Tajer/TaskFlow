@@ -8,8 +8,11 @@ import com.tasks.models.User;
 import com.tasks.repository.UserRepository;
 import com.tasks.security.ApplicationConfig;
 import com.tasks.services.User.UserService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.json.JsonParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -69,6 +72,23 @@ public class UserServiceImpl implements UserService {
     public User getUserByEmail(String email) {
         return userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new FunctionalException("USER_NOT_FOUND", HttpStatus.NOT_FOUND));
+    }
+
+    @Override
+    public Boolean isAuthenticated(String token) {
+
+        try {
+
+        Claims claims = jwtService.extractAllClaims(token);
+        User user = getUserByEmail(claims.getSubject());
+
+        log.info("Checking if token is valid");
+        return jwtService.isTokenValid(token, user);
+
+        } catch (JwtException exception) {
+            throw new FunctionalException("ERR_INVALID_TOKEN", HttpStatus.BAD_REQUEST);
+        }
+
     }
 
 

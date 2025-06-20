@@ -10,13 +10,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth/")
@@ -48,6 +46,13 @@ public class UserController {
                 .timestamp(Date.from(Instant.now()))
                 .token(token)
                 .build());
+    }
+
+    @GetMapping("authenticate")
+    public ResponseEntity<Map<String, ?>> isAuthenticated(@RequestHeader("Authorization") String authHeader) {
+
+        userService.isAuthenticated(authHeader);
+        return ResponseEntity.ok(Map.of("message", "Token is valid", "status", 200));
     }
 
 }
