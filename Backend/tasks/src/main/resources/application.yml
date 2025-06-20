@@ -3,6 +3,10 @@ spring:
   application:
     name: Tasks
 
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
   datasource:
     url: jdbc:postgresql://localhost:5432/tasksDB
     username: user
