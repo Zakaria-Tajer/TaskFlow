@@ -5,6 +5,7 @@ import com.tasks.dto.TaskRequestDto;
 import com.tasks.dto.TaskResponseDto;
 import com.tasks.mappers.TaskMapper;
 import com.tasks.services.Task.TaskService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +24,13 @@ public class TaskController {
     public final TaskService taskService;
 
     @PostMapping("create")
-    public ResponseEntity<TaskResponseDto> addTask(@RequestBody TaskRequestDto taskRequestDto) {
+    public ResponseEntity<TaskResponseDto> addTask(@Valid @RequestBody TaskRequestDto taskRequestDto) {
         return ResponseEntity.ok(TaskMapper.toResponseDTO(taskService.createTask(taskRequestDto)));
     }
 
 
     @PutMapping("update/{taskID}")
-    public ResponseEntity<TaskResponseDto> updateTask(@PathVariable Long taskID, @RequestBody TaskRequestDto taskRequestDto) {
+    public ResponseEntity<TaskResponseDto> updateTask(@Valid @PathVariable Long taskID, @RequestBody TaskRequestDto taskRequestDto) {
         return ResponseEntity.ok(TaskMapper.toResponseDTO(taskService.updateTask(taskID, taskRequestDto)));
     }
 
