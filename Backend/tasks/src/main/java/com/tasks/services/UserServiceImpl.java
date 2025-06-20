@@ -1,6 +1,7 @@
 package com.tasks.services;
 
 import com.tasks.dto.UserDto;
+import com.tasks.dto.UserLoginDto;
 import com.tasks.exceptions.FunctionalException;
 import com.tasks.mappers.UserMapper;
 import com.tasks.models.User;
@@ -50,6 +51,19 @@ public class UserServiceImpl implements UserService {
         return authenticateUser(userSaved.getEmail(), rawPassword);
     }
 
+    @Override
+    public String SignIn(UserLoginDto loginDto) {
+        User user = getUserByEmail(loginDto.getEmail());
+
+
+        if (!applicationConfig.passwordEncoder().matches(loginDto.getPassword(), user.getPassword())) {
+            log.info("Passwords do not match");
+            throw new FunctionalException("ERR_PASSWORDS_DONT_MATCH", HttpStatus.BAD_REQUEST);
+        }
+
+        return authenticateUser(loginDto.getEmail(), loginDto.getPassword());
+
+    }
 
     @Override
     public User getUserByEmail(String email) {
