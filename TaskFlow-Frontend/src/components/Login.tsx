@@ -1,20 +1,32 @@
-import React, { useState, type ChangeEvent, type FormEvent } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useState, type ChangeEvent, type FormEvent } from "react";
+import { userSignIn, type AuthResponse, type UserSignIn } from "../api/user";
+import { Link, useNavigate } from "react-router";
 
-type Login = {
-  Email: string;
-  Password: string;
-};
+function Login() {
+  const navigate = useNavigate();
 
-function Auth() {
-  const [loginData, setLoginData] = useState<Login>({
-    Email: "",
-    Password: "",
+  const { mutate, error } = useMutation({
+    mutationFn: userSignIn,
+    onSuccess: (data: AuthResponse) => {
+      console.log("✅ Signup success:", data.message);
+
+      navigate("/home");
+    },
+    onError: (data: AuthResponse) => {
+      console.log("Failed:", data.message);
+    },
+  });
+
+  const [loginData, setLoginData] = useState<UserSignIn>({
+    email: "",
+    password: "",
   });
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    console.log(loginData);
+    mutate({ email: loginData.email, password: loginData.password });
   };
 
   return (
@@ -31,6 +43,14 @@ function Auth() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        {error != null ? (
+          <div className="w-full p-2 bg-red-400 my-3 rounded-md text-center">
+            <p className="text-sm text-white">{error.message}</p>
+          </div>
+        ) : (
+          ""
+        )}
+
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label
@@ -42,7 +62,7 @@ function Auth() {
             <div className="mt-2">
               <input
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setLoginData({ ...loginData, Email: e.target.value })
+                  setLoginData({ ...loginData, email: e.target.value })
                 }
                 type="email"
                 name="email"
@@ -74,7 +94,7 @@ function Auth() {
             <div className="mt-2">
               <input
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setLoginData({ ...loginData, Password: e.target.value })
+                  setLoginData({ ...loginData, password: e.target.value })
                 }
                 type="password"
                 name="password"
@@ -98,16 +118,16 @@ function Auth() {
 
         <p className="mt-10 text-center text-sm/6 text-gray-500">
           Not a member?
-          <a
-            href="#"
+          <Link
+            to="/register"
             className="font-semibold text-indigo-600 hover:text-indigo-500"
           >
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
     </div>
   );
 }
 
-export default Auth;
+export default Login;
