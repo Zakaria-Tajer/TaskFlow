@@ -1,9 +1,7 @@
-import React from 'react'
+import Tasks from "../components/Tasks/Tasks";
 
 function HomeTasks() {
-  return (
-    <div>HomeTasks</div>
-  )
+  return <Tasks />;
 }
 
-export default HomeTasks
+export default HomeTasks;

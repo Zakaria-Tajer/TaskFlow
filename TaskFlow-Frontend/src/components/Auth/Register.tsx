@@ -1,8 +1,8 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, type ChangeEvent, type FormEvent } from "react";
-import { userSignUp, type UserSignUp } from "../api/user";
 import { Link, useNavigate } from "react-router";
-import { setCookie } from "../utils/CookieUtil";
+import { setCookie } from "../../utils/CookieUtil";
+import { userSignUp, type UserSignUp } from "../../api/user";
 
 type AuthResponse = {
   timestamp: string;
@@ -13,6 +13,7 @@ type AuthResponse = {
 
 function Register() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { mutate, error } = useMutation({
     mutationFn: userSignUp,
@@ -21,7 +22,7 @@ function Register() {
       console.log("✅ Signup success:", data.message);
       setCookie(data.token);
 
-      navigate("/home");
+      queryClient.invalidateQueries({ queryKey: ["authUser"] });
     },
     onError: (data: AuthResponse) => {
       console.log("Failed:", data.message);
@@ -47,6 +48,8 @@ function Register() {
       roles: registerData.roles,
       image: "",
     });
+
+    navigate("/home");
   };
 
   return (
@@ -153,14 +156,6 @@ function Register() {
               >
                 Password
               </label>
-              <div className="text-sm">
-                <a
-                  href="#"
-                  className="font-semibold text-sm text-indigo-600 hover:text-indigo-500"
-                >
-                  Forgot password?
-                </a>
-              </div>
             </div>
             <div className="mt-2">
               <input
@@ -180,9 +175,9 @@ function Register() {
           <div>
             <button
               type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="cursor-pointer flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Sign in
+              Sign up
             </button>
           </div>
         </form>

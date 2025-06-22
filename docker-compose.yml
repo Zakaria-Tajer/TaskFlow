@@ -2,6 +2,7 @@
 services:
   db:
     image: postgres:16.9
+    tty: true
     environment:
       POSTGRES_DB: tasksDB
       POSTGRES_USER: user

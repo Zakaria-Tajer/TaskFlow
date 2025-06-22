@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, type ChangeEvent, type FormEvent } from "react";
-import { userSignIn, type AuthResponse, type UserSignIn } from "../api/user";
 import { Link, useNavigate } from "react-router";
-import { setCookie } from "../utils/CookieUtil";
+import { setCookie } from "../../utils/CookieUtil";
+import { userSignIn, type AuthResponse, type UserSignIn } from "../../api/user";
 
 function Login() {
   const navigate = useNavigate();
@@ -115,7 +115,7 @@ function Login() {
           <div>
             <button
               type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="flex  cursor-pointer w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Sign in
             </button>
