@@ -1,4 +1,3 @@
-
 services:
   db:
     image: postgres:16.9
@@ -12,6 +11,27 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  frontend:
+    build:
+      context: ./TaskFlow-Frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./Backend/tasks
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/tasksDB
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+    depends_on:
+      - db
 
 volumes:
   pgdata:
