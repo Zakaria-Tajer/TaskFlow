@@ -18,6 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -78,12 +79,16 @@ public class UserServiceImpl implements UserService {
     public Boolean isAuthenticated(String token) {
 
         try {
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
 
-        Claims claims = jwtService.extractAllClaims(token);
-        User user = getUserByEmail(claims.getSubject());
+            Claims claims = jwtService.extractAllClaims(token);
+            User user = getUserByEmail(claims.getSubject());
 
-        log.info("Checking if token is valid");
-        return jwtService.isTokenValid(token, user);
+            boolean isValid = jwtService.isTokenValid(token, user);
+            log.info("Token is {}", isValid);
+            return isValid;
 
         } catch (JwtException exception) {
             throw new FunctionalException("ERR_INVALID_TOKEN", HttpStatus.BAD_REQUEST);

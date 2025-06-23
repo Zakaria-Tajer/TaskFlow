@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface TaskService {
 
-     Task createTask(TaskRequestDto task);
+     Task createTask(TaskRequestDto task, Long userId);
 
      Task updateTask(Long TaskID, TaskRequestDto task);
 
@@ -16,5 +16,5 @@ public interface TaskService {
 
      Task getTaskById(Long id);
 
-     List<TaskResponseDto> getAllTasks();
+     List<TaskResponseDto> getAllTasks(Long userId);
 }

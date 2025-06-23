@@ -1,11 +1,17 @@
 package com.tasks.dto;
 
 
+import com.tasks.enums.Priority;
 import com.tasks.enums.Status;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,7 +26,17 @@ public class TaskRequestDto {
     private String title;
 
     @Size(max = 1000, min = 6, message = "must be between 6 and 1000 characters")
+    @NotNull(message = "Status is required")
     private String description;
 
+    @NotNull(message = "Status is required")
+    @Enumerated(EnumType.STRING)
     private Status status;
+
+    @NotNull(message = "Priority is required")
+    @Enumerated(EnumType.STRING)
+    private Priority priority;
+
+    @NotNull(message = "Due Date is required")
+    private LocalDateTime dueDate;
 }

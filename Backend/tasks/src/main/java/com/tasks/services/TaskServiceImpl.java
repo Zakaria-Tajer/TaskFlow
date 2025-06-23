@@ -32,11 +32,11 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public Task createTask(TaskRequestDto task) {
+    public Task createTask(TaskRequestDto task, Long userId) {
 
         log.info("Creating task {}", task.getStatus());
 
-        User user = userRepository.findById(task.getUserId())
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new FunctionalException("USER_NOT_FOUND", HttpStatus.NOT_FOUND));
 
         Task newTask = TaskMapper.toEntity(task);
@@ -67,11 +67,12 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public List<TaskResponseDto> getAllTasks() {
-        return tasksRepository.findAll(Sort.by(Sort.Direction.ASC, "id"))
+    public List<TaskResponseDto> getAllTasks(Long userId) {
+        return tasksRepository.findByUserId(userId, Sort.by(Sort.Direction.ASC, "id"))
                 .stream()
                 .map(TaskMapper::toResponseDTO)
                 .collect(Collectors.toList());
+
     }
 
     @Override

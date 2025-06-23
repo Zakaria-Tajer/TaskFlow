@@ -13,6 +13,8 @@ public class TaskMapper {
         return Task.builder()
                 .title(dto.getTitle())
                 .description(dto.getDescription())
+                .priority(dto.getPriority())
+                .dueDate(dto.getDueDate())
                 .status(dto.getStatus() == null ? Status.PENDING: dto.getStatus())
                 .build();
     }
@@ -25,6 +27,8 @@ public class TaskMapper {
                 .title(task.getTitle())
                 .description(task.getDescription())
                 .status(task.getStatus())
+                .priority(task.getPriority())
+                .dueDate(task.getDueDate())
                 .createdAt(task.getCreatedAt())
                 .updatedAt(task.getUpdatedAt())
                 .build();

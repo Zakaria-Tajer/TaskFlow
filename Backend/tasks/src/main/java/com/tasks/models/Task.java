@@ -1,5 +1,6 @@
 package com.tasks.models;
 
+import com.tasks.enums.Priority;
 import com.tasks.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,6 +27,11 @@ public class Task {
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.PENDING;
+    
+    @Enumerated(EnumType.STRING)
+    private Priority priority;
+
+    private LocalDateTime dueDate;
 
     private LocalDateTime createdAt;
 

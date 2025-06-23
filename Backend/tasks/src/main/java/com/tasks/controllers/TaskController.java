@@ -5,10 +5,13 @@ import com.tasks.dto.TaskRequestDto;
 import com.tasks.dto.TaskResponseDto;
 import com.tasks.mappers.TaskMapper;
 import com.tasks.services.Task.TaskService;
+import com.tasks.services.User.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,10 +25,13 @@ public class TaskController {
 
 
     public final TaskService taskService;
+    public final UserService userService;
 
     @PostMapping("create")
-    public ResponseEntity<TaskResponseDto> addTask(@Valid @RequestBody TaskRequestDto taskRequestDto) {
-        return ResponseEntity.ok(TaskMapper.toResponseDTO(taskService.createTask(taskRequestDto)));
+    public ResponseEntity<TaskResponseDto> addTask(@Valid @AuthenticationPrincipal UserDetails userDetails, @RequestBody TaskRequestDto taskRequestDto) {
+        Long userId = userService.getUserByEmail(userDetails.getUsername()).getId();
+
+        return ResponseEntity.ok(TaskMapper.toResponseDTO(taskService.createTask(taskRequestDto, userId)));
     }
 
 
@@ -42,8 +48,10 @@ public class TaskController {
 
 
     @GetMapping("all")
-    public List<TaskResponseDto> addTask() {
-        return taskService.getAllTasks();
+    public List<TaskResponseDto> getAllTasks(@AuthenticationPrincipal UserDetails userDetails) {
+        Long userId = userService.getUserByEmail(userDetails.getUsername()).getId();
+
+        return taskService.getAllTasks(userId);
     }
 
 
