@@ -2,6 +2,7 @@ import { Calendar, FileText, Flag, Tag, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { createTask, updateTask, type Task } from "../../api/tasks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { validateTask } from "./Schema";
 
 type TaskUpdateProps = {
   task?: Task | null;
@@ -11,9 +12,22 @@ type TaskUpdateProps = {
   mode?: "create" | "edit";
 };
 
+type ValidationErrors = {
+  title?: string;
+  description?: string;
+  priority?: string;
+  status?: string;
+  dueDate?: string;
+};
 function TaskUpdate({ task, isOpen, onClose, mode = "edit" }: TaskUpdateProps) {
   const queryClient = useQueryClient();
   const isCreateMode = mode === "create" || !task;
+  const [errors, setErrors] = useState<ValidationErrors>();
+
+  const getTodayDate = (): string => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  };
 
   const [formData, setFormData] = useState({
     title: "",
@@ -63,13 +77,21 @@ function TaskUpdate({ task, isOpen, onClose, mode = "edit" }: TaskUpdateProps) {
     }
   }, [task, isCreateMode, isOpen]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const validationErrors = await validateTask(formData as Task);
+
+    if (validationErrors) {
+      setErrors(validationErrors);
+      return;
+    }
+    setErrors({});
 
     if (isCreateMode) {
       createMutation.mutate({
-        title: formData.title,
-        description: formData.description,
+        title: formData.title.trim(),
+        description: formData.description.trim(),
         priority: formData.priority,
         status: formData.status,
         dueDate: formData.dueDate,
@@ -77,7 +99,11 @@ function TaskUpdate({ task, isOpen, onClose, mode = "edit" }: TaskUpdateProps) {
     } else {
       const updatedTask: Task = {
         ...task!,
-        ...formData,
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        priority: formData.priority,
+        status: formData.status,
+        dueDate: formData.dueDate,
       };
       updateMutation.mutate(updatedTask);
     }
@@ -116,6 +142,8 @@ function TaskUpdate({ task, isOpen, onClose, mode = "edit" }: TaskUpdateProps) {
             <X className="w-5 h-5 text-gray-500" />
           </button>
         </div>
+
+        {/* //Form rem */}
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           <div>
             <label
@@ -136,6 +164,11 @@ function TaskUpdate({ task, isOpen, onClose, mode = "edit" }: TaskUpdateProps) {
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors disabled:opacity-50"
               placeholder="Enter task title..."
             />
+            {errors?.title && (
+              <p className="text-red-700 font-medium text-sm mt-1">
+                {errors.title}
+              </p>
+            )}
           </div>
 
           <div>
@@ -156,6 +189,11 @@ function TaskUpdate({ task, isOpen, onClose, mode = "edit" }: TaskUpdateProps) {
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none disabled:opacity-50"
               placeholder="Enter task description..."
             />
+            {errors?.description && (
+              <p className="text-red-700 font-medium text-sm mt-1">
+                {errors.description}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -181,6 +219,11 @@ function TaskUpdate({ task, isOpen, onClose, mode = "edit" }: TaskUpdateProps) {
                   </option>
                 ))}
               </select>
+              {errors?.priority && (
+                <p className="text-red-700 font-medium text-sm mt-1">
+                  {errors.priority}
+                </p>
+              )}
             </div>
 
             <div>
@@ -205,6 +248,11 @@ function TaskUpdate({ task, isOpen, onClose, mode = "edit" }: TaskUpdateProps) {
                   </option>
                 ))}
               </select>
+              {errors?.status && (
+                <p className="text-red-700 font-medium text-sm mt-1">
+                  {errors.status}
+                </p>
+              )}
             </div>
           </div>
 
@@ -222,9 +270,15 @@ function TaskUpdate({ task, isOpen, onClose, mode = "edit" }: TaskUpdateProps) {
               name="dueDate"
               value={formData.dueDate}
               onChange={handleChange}
+              min={getTodayDate()}
               disabled={isLoading}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors disabled:opacity-50"
             />
+            {errors?.dueDate && (
+              <p className="text-red-700 font-medium text-sm mt-1">
+                {errors.dueDate}
+              </p>
+            )}
           </div>
 
           <div className="flex gap-3 pt-4">

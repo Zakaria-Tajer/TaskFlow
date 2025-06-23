@@ -109,10 +109,10 @@ function Tasks() {
   if (isLoading) return <Loading />;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 overflow-hidden mb-10">
       <Header />
 
-      <main className="flex-1 p-6">
+      <main className="flex-1 sm:flex-1 scrollbar-medium rounded-xl bg-white md:w-2/3 md:mx-auto md:my-7 overflow-scroll h-screen pb-32 p-6 shadow-md">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <div>
