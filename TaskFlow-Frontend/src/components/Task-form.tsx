@@ -1,41 +1,50 @@
 import type React from "react";
 import { useState } from "react";
 import { Plus, X } from "lucide-react";
-import type { Task } from "../api/tasks";
+import { createTask, type Task } from "../api/tasks";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-interface TaskFormProps {
-  onAddTask: (task: Task) => void;
-}
+function TaskForm() {
+  const queryClient = useQueryClient();
 
-export function TaskForm({ onAddTask }: TaskFormProps) {
+  const { mutate } = useMutation({
+    mutationFn: createTask,
+    onSuccess: (data) => {
+      console.log("✅ Signup success:", data);
+      queryClient.invalidateQueries({ queryKey: ["getTasks"] });
+    },
+  });
+
+  const formatDateToLocalDateTime = (date: Date) => {
+    return date.toISOString().split(".")[0];
+  };
+
   const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Task>({
     title: "",
     description: "",
-    priority: "medium",
-    category: "Work",
-    dueDate: "",
-    assignee: "",
+    priority: "",
+    status: "",
+    dueDate: new Date(),
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title.trim()) return;
 
-    onAddTask({
-      id: 1,
+    mutate({
+      title: formData.title,
+      description: formData.description,
+      priority: formData.priority,
+      dueDate: formatDateToLocalDateTime(new Date(formData.dueDate)),
+      status: formData.status,
     });
 
-    setFormData({
-      title: "",
-      description: "",
-      priority: "medium",
-      category: "Work",
-      dueDate: "",
-      assignee: "",
-    });
     setOpen(false);
   };
+
+  const status: string[] = ["pending", "ongoing", "done"];
+  const priority: string[] = ["low", "medium", "high"];
 
   return (
     <>
@@ -48,7 +57,7 @@ export function TaskForm({ onAddTask }: TaskFormProps) {
       </button>
 
       {open && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-gray-400/50 flex items-center justify-center p-4 ">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">Create New Task</h2>
@@ -113,34 +122,37 @@ export function TaskForm({ onAddTask }: TaskFormProps) {
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
+                    {priority.map((priority: string, i: number) => (
+                      <option key={i} value={priority.toLocaleUpperCase()}>
+                        {priority}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>
                   <label
-                    htmlFor="category"
+                    htmlFor="status"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Category
+                    Status
                   </label>
                   <select
-                    id="category"
-                    value={formData.category}
+                    id="status"
+                    value={formData.status}
                     onChange={(e) =>
-                      setFormData({ ...formData, category: e.target.value })
+                      setFormData({ ...formData, status: e.target.value })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="Work">Work</option>
-                    <option value="Personal">Personal</option>
-                    <option value="Shopping">Shopping</option>
-                    <option value="Health">Health</option>
+                    {status.map((status: string, i: number) => (
+                      <option key={i} value={status.toLocaleUpperCase()}>
+                        {status}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-4">
                 <div>
                   <label
                     htmlFor="dueDate"
@@ -151,28 +163,10 @@ export function TaskForm({ onAddTask }: TaskFormProps) {
                   <input
                     id="dueDate"
                     type="date"
-                    value={formData.dueDate}
+                    value={formData.dueDate as string}
                     onChange={(e) =>
                       setFormData({ ...formData, dueDate: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="assignee"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Assignee
-                  </label>
-                  <input
-                    id="assignee"
-                    type="text"
-                    value={formData.assignee}
-                    onChange={(e) =>
-                      setFormData({ ...formData, assignee: e.target.value })
-                    }
-                    placeholder="Assign to..."
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
@@ -199,3 +193,5 @@ export function TaskForm({ onAddTask }: TaskFormProps) {
     </>
   );
 }
+
+export default TaskForm;

@@ -16,6 +16,8 @@ function Login() {
       setCookie(data.token);
 
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
+
+      navigate("/home");
     },
     onError: (data: AuthResponse) => {
       console.log("Failed:", data.message);
@@ -31,8 +33,6 @@ function Login() {
     e.preventDefault();
 
     mutate({ email: loginData.email, password: loginData.password });
-
-    navigate("/home");
   };
 
   return (

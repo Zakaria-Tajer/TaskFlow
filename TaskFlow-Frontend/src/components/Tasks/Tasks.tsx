@@ -1,16 +1,22 @@
 import { useState } from "react";
 import Header from "./Header";
-import { TaskForm } from "../Task-form";
 import { CheckSquare, LayoutGrid, List } from "lucide-react";
-import type { Task } from "../../api/tasks";
+import TaskForm from "../Task-form";
+import { useQuery } from "@tanstack/react-query";
+import { getAllTasks, type Task } from "../../api/tasks";
+import Loading from "../Loading";
+import { TaskCard } from "./Task-card";
 
 function Tasks() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  // const [tasks, setTasks] = useState<Task[]>([]);
   const [viewMode, setViewMode] = useState("list");
 
-  const handleAddTask = (newTask: Task) => {
-    setTasks([...tasks, newTask]);
-  };
+  const { data: tasks, isLoading } = useQuery({
+    queryKey: ["getTasks"],
+    queryFn: getAllTasks,
+  });
+
+  if (isLoading) return <Loading />;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -50,7 +56,7 @@ function Tasks() {
           </div>
 
           <div className="mb-6">
-            <TaskForm onAddTask={handleAddTask} />
+            <TaskForm />
           </div>
 
           <div
@@ -60,19 +66,19 @@ function Tasks() {
                 : "space-y-0"
             }
           >
-            <div className="text-center py-12">
-              <div className="text-gray-400 mb-4">
-                <CheckSquare className="w-16 h-16 mx-auto" />
+            {tasks && tasks.length > 0 ? (
+              tasks.map((task: Task) => <TaskCard key={task.id} task={task} />)
+            ) : (
+              <div className="text-center py-12">
+                <div className="text-gray-400 mb-4">
+                  <CheckSquare className="w-16 h-16 mx-auto" />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  No tasks found
+                </h3>
+                <p className="text-gray-600"></p>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                No tasks found
-              </h3>
-              <p className="text-gray-600">
-                {/* {searchQuery
-                    ? "Try adjusting your search terms"
-                    : "Create your first task to get started"} */}
-              </p>
-            </div>
+            )}
           </div>
         </div>
       </main>
