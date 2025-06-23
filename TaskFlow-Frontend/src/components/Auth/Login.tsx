@@ -8,11 +8,11 @@ function Login() {
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();
-
   const { mutate, error } = useMutation({
     mutationFn: userSignIn,
     onSuccess: (data: AuthResponse) => {
       console.log("✅ Signup success:", data.message);
+
       setCookie(data.token);
 
       queryClient.invalidateQueries({ queryKey: ["authUser"] });

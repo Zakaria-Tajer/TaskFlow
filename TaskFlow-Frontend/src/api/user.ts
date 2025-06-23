@@ -73,5 +73,5 @@ export const isAuthenticated = async () => {
 
     throw new Error(error.message || "Failed to Authenticate");
   }
-  return res.ok;
+  return res.json();
 };

@@ -7,6 +7,9 @@ export function setCookie(token: string) {
   });
 }
 export function getCookie(): string {
-  console.log(Cookies.get("token"));
   return Cookies.get("token") as string;
+}
+
+export function removeCookie() {
+  Cookies.remove("token");
 }
