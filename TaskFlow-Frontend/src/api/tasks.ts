@@ -57,3 +57,43 @@ export const getAllTasks = async () => {
   }
   return res.json();
 };
+
+export const updateTask = async (tasks: Task) => {
+  const res = await fetch(`${baseURL}/tasks/update/${tasks.id}`, {
+    method: "PUT",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token(),
+    },
+
+    body: JSON.stringify(tasks),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    console.log(error);
+
+    throw new Error(error.message || "Failed to Update Task");
+  }
+  return res.json();
+};
+
+export const deleteTask = async (tasksId: number) => {
+  const res = await fetch(`${baseURL}/tasks/delete/${tasksId}`, {
+    method: "DELETE",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token(),
+    },
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    console.log(error);
+
+    throw new Error(error.message || "Failed to Delete Task");
+  }
+  return res.json();
+};
