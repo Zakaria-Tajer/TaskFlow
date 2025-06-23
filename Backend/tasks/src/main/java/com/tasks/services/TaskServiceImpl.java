@@ -34,6 +34,8 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task createTask(TaskRequestDto task, Long userId) {
 
+
+
         log.info("Creating task {}", task.getStatus());
 
         User user = userRepository.findById(userId)
@@ -49,11 +51,16 @@ public class TaskServiceImpl implements TaskService {
     public Task updateTask(Long TaskID, TaskRequestDto task) {
         Task existingTask = getTaskById(TaskID);
 
-        existingTask.setTitle(task.getTitle() != null ? task.getTitle() : existingTask.getTitle());
-        existingTask.setStatus(task.getStatus() != null ? task.getStatus() : existingTask.getStatus());
-        existingTask.setDescription(task.getDescription() != null ? task.getDescription() : existingTask.getDescription());
 
-        log.info("Updating task {}", task.getStatus());
+        existingTask.setTitle(task.getTitle());
+        existingTask.setDescription(task.getDescription());
+        existingTask.setDueDate(task.getDueDate());
+        existingTask.setPriority(task.getPriority());
+        existingTask.setStatus(task.getStatus());
+
+
+
+        log.info("Updating task {}", existingTask);
         return tasksRepository.save(existingTask);
     }
 
@@ -68,7 +75,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskResponseDto> getAllTasks(Long userId) {
-        return tasksRepository.findByUserId(userId, Sort.by(Sort.Direction.ASC, "id"))
+        return tasksRepository.findByUserId(userId, Sort.by(Sort.Direction.DESC, "id"))
                 .stream()
                 .map(TaskMapper::toResponseDTO)
                 .collect(Collectors.toList());

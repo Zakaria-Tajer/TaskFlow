@@ -1,5 +1,6 @@
 package com.tasks.services;
 
+import com.tasks.dto.AuthenticateDto;
 import com.tasks.dto.UserDto;
 import com.tasks.dto.UserLoginDto;
 import com.tasks.exceptions.FunctionalException;
@@ -76,7 +77,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean isAuthenticated(String token) {
+    public AuthenticateDto isAuthenticated(String token) {
 
         try {
             if (token.startsWith("Bearer ")) {
@@ -86,9 +87,18 @@ public class UserServiceImpl implements UserService {
             Claims claims = jwtService.extractAllClaims(token);
             User user = getUserByEmail(claims.getSubject());
 
+
+
             boolean isValid = jwtService.isTokenValid(token, user);
-            log.info("Token is {}", isValid);
-            return isValid;
+
+            if (!isValid) {
+                throw new FunctionalException("ERR_INVALID_TOKEN", HttpStatus.BAD_REQUEST);
+            }
+
+            return AuthenticateDto.builder()
+                    .email(user.getEmail())
+                    .lastName(user.getLastName())
+                    .firstName(user.getFirstName()).build();
 
         } catch (JwtException exception) {
             throw new FunctionalException("ERR_INVALID_TOKEN", HttpStatus.BAD_REQUEST);

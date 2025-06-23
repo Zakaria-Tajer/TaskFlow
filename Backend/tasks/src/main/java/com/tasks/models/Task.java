@@ -5,6 +5,7 @@ import com.tasks.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -31,7 +32,7 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private Priority priority;
 
-    private LocalDateTime dueDate;
+    private LocalDate dueDate;
 
     private LocalDateTime createdAt;
 

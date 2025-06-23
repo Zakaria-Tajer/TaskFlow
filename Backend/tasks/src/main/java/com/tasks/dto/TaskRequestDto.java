@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -21,12 +21,13 @@ public class TaskRequestDto {
 
     private Long userId;
 
+
     @NotBlank(message = "Title is required")
     @Size(max = 150, min = 3, message = "Title must be between 3 and 100 characters")
     private String title;
 
-    @Size(max = 1000, min = 6, message = "must be between 6 and 1000 characters")
-    @NotNull(message = "Status is required")
+    @Size(max = 1000, min = 6, message = "Description must be between 6 and 1000 characters")
+    @NotNull(message = "Description is required")
     private String description;
 
     @NotNull(message = "Status is required")
@@ -38,5 +39,5 @@ public class TaskRequestDto {
     private Priority priority;
 
     @NotNull(message = "Due Date is required")
-    private LocalDateTime dueDate;
+    private LocalDate dueDate;
 }

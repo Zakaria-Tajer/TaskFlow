@@ -1,6 +1,7 @@
 package com.tasks.controllers;
 
 
+import com.tasks.dto.AuthenticateDto;
 import com.tasks.dto.UserDto;
 import com.tasks.dto.UserLoginDto;
 import com.tasks.dto.UserResponseDto;
@@ -50,10 +51,9 @@ public class UserController {
     }
 
     @GetMapping("authenticate")
-    public ResponseEntity<Map<String, ?>> isAuthenticated(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<AuthenticateDto> isAuthenticated(@RequestHeader("Authorization") String authHeader) {
 
-        userService.isAuthenticated(authHeader);
-        return ResponseEntity.ok(Map.of("message", "Token is valid", "status", 200));
+        return ResponseEntity.ok(userService.isAuthenticated(authHeader));
     }
 
 }

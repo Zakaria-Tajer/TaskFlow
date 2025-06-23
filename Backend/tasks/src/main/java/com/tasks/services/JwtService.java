@@ -7,7 +7,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.boot.json.JsonParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,10 +25,16 @@ import java.util.stream.Collectors;
 public class JwtService {
 
 
-//    Remember Adding secret key in .env
-    private static final String SECRET_KEY = "2A462D4A614E645267556A586E3272357538782F413F4428472B4B6250655368";
+    private static final Logger log = LoggerFactory.getLogger(JwtService.class);
+    @Value("${JWT_SECRET}")
+    private String SECRET_KEY;
+
+    public String getSecretKey() {
+        return SECRET_KEY;
+    }
 
     public String extractUsername(String token) {
+        log.info(getSecretKey());
         return extractClaim(token, Claims::getSubject);
     }
 
