@@ -61,7 +61,6 @@ function Tasks() {
       ) {
         return false;
       }
-
       // Priority filter
       if (
         filters.priority !== "all" &&
@@ -69,7 +68,6 @@ function Tasks() {
       ) {
         return false;
       }
-
       // Search filter
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
