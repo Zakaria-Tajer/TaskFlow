@@ -13,7 +13,7 @@ export type Task = {
 const token = () => {
   return getCookie();
 };
-const baseURL = "http://localhost:8080/api/v1";
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export const createTask = async (task: Task) => {
   console.log("Token being sent:", token());

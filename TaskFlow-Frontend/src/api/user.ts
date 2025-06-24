@@ -24,7 +24,7 @@ export type AuthResponse = {
   token: string;
 };
 
-const baseURL = "http://localhost:8080/api/v1";
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export const userSignIn = async (user: UserSignIn) => {
   const res = await fetch(`${baseURL}/auth/login`, {
