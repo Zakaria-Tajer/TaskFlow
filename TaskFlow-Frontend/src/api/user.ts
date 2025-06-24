@@ -13,8 +13,7 @@ export type UserSignUp = {
   lastName: string;
   email: string;
   password: string;
-  image?: string;
-  roles: Roles;
+  roles?: Roles;
 };
 
 export type AuthResponse = {

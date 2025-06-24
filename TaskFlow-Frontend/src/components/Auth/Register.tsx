@@ -3,6 +3,7 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
 import { setCookie } from "../../utils/CookieUtil";
 import { userSignUp, type UserSignUp } from "../../api/user";
+import { validateUser } from "./Schema";
 
 type AuthResponse = {
   timestamp: string;
@@ -11,9 +12,18 @@ type AuthResponse = {
   token: string;
 };
 
+type ValidationErrors = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+};
+
 function Register() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  const [errors, setErrors] = useState<ValidationErrors>();
 
   const { mutate, error } = useMutation({
     mutationFn: userSignUp,
@@ -26,6 +36,7 @@ function Register() {
     },
     onError: (data: AuthResponse) => {
       console.log("Failed:", data.message);
+      return;
     },
   });
 
@@ -37,19 +48,28 @@ function Register() {
     roles: "User",
   });
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    mutate({
-      firstName: registerData.firstName,
-      lastName: registerData.lastName,
-      email: registerData.email,
-      password: registerData.password,
-      roles: registerData.roles,
-      image: "",
-    });
+    const validationErrors = await validateUser(registerData as UserSignUp);
 
-    navigate("/home");
+    if (validationErrors) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
+
+    if (!error) {
+      mutate({
+        firstName: registerData.firstName,
+        lastName: registerData.lastName,
+        email: registerData.email,
+        password: registerData.password,
+        roles: registerData.roles,
+      });
+      navigate("/home");
+    }
   };
 
   return (
@@ -74,7 +94,7 @@ function Register() {
           ""
         )}
 
-        <form className="space-y-3" onSubmit={handleSubmit}>
+        <form className="" onSubmit={handleSubmit}>
           <div className="flex items-center space-x-4 justify-around">
             {/* firstname */}
             <div>
@@ -98,6 +118,13 @@ function Register() {
                   required
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
+                <div className="h-5 mt-1">
+                  {errors?.firstName && (
+                    <p className="text-red-700 font-medium text-sm mt-1">
+                      {errors.firstName}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
             {/*lastname*/}
@@ -122,6 +149,13 @@ function Register() {
                   required
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
+                <div className="h-5 mt-1">
+                  {errors?.lastName && (
+                    <p className="text-red-700 font-medium text-sm mt-1">
+                      {errors.lastName}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -145,6 +179,13 @@ function Register() {
                 autoComplete="email"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
               />
+              <div className="h-5 mt-1">
+                {errors?.email && (
+                  <p className="text-red-700 font-medium text-sm mt-1">
+                    {errors.email}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
           {/*password*/}
@@ -169,6 +210,13 @@ function Register() {
                 required
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
               />
+              <div className="h-5 mt-1 mb-1">
+                {errors?.password && (
+                  <p className="text-red-700 font-medium text-sm mt-1">
+                    {errors.password}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
 
