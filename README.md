@@ -1,6 +1,6 @@
 # 📝 TaskFlow - Task Management API
 
-A RESTful backend API for managing tasks with secure user authentication. Built with Java Spring Boot, JWT-based security, Docker Compose, and Input validation.
+A RESTful backend API for managing tasks with secure user authentication. Built with Java Spring Boot, JWT-based security, Docker Compose, and input validation.
 
 ---
 
@@ -19,12 +19,12 @@ A RESTful backend API for managing tasks with secure user authentication. Built 
 - 🧾 **Task Management**
 
   - Create / Read / Update / Delete tasks
-  - Task status enum (e.g., `PENDING`, `IN_PROGRESS`, `COMPLETED`)
+  - Task status enum (e.g., `PENDING`, `ONGOING`, `DONE`)
   - Input validation with meaningful error messages
 
 - 🐳 **Dockerized Setup**
 
-  - Docker Compose for backend and PostgreSQL
+  - Docker Compose for backend, frontend and PostgreSQL
 
 - 🧪 **Error Handling**
   - Centralized exception handling
@@ -47,15 +47,45 @@ A RESTful backend API for managing tasks with secure user authentication. Built 
 
 ## 📦 Installation
 
-```bash
+````bash
 # Clone the repo
 git clone https://github.com/Zakaria-Tajer/TaskFlow.git
 cd taskflow
 
-# Build the project
+# Backend Setup
+
+```bash
+cd backend
 ./mvnw clean install
+
+# Frontend Setup
+
+```bash
+cd TaskFlow-Frontend
+npm install
 
 # Run with Docker
 docker-compose up --build
 
-```
+````
+
+## 🔐 Backend API Usage
+
+### 🧑‍💻 Authentication Endpoints
+
+| Method | Endpoint           | Description           |
+| ------ | ------------------ | --------------------- |
+| POST   | /api/auth/register | Register a new user   |
+| POST   | /api/auth/login    | Login and receive JWT |
+
+### 📝 Task Endpoints (🔒 Requires JWT)
+
+| Method | Endpoint        | Description             |
+| ------ | --------------- | ----------------------- |
+| GET    | /api/tasks      | Get all tasks           |
+| GET    | /api/tasks/{id} | Get a specific task     |
+| POST   | /api/tasks      | Create a new task       |
+| PUT    | /api/tasks/{id} | Update an existing task |
+| DELETE | /api/tasks/{id} | Delete a task           |
+
+> 📌 **Note**: All `/api/tasks/**` endpoints require an `Authorization` header with a valid JWT token:
