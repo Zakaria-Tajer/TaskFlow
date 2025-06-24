@@ -7,8 +7,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,10 +22,10 @@ import java.util.stream.Collectors;
 
 
 @Service
+@Slf4j
 public class JwtService {
 
 
-    private static final Logger log = LoggerFactory.getLogger(JwtService.class);
     @Value("${JWT_SECRET}")
     private String SECRET_KEY;
 

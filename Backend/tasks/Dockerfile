@@ -4,6 +4,7 @@ WORKDIR /app
 
 
 COPY target/*.jar app.jar
+COPY .env .env
 
 EXPOSE 8080
 
