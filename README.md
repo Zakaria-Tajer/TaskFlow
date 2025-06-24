@@ -52,6 +52,23 @@ A RESTful backend API for managing tasks with secure user authentication. Built 
 git clone https://github.com/Zakaria-Tajer/TaskFlow.git
 cd taskflow
 
+### 2. Setup environment variables
+
+#### Backend
+Create `.env `file in `backend/tasks`and update the values:
+
+JWT_SECRET=your_jwt_secret_here
+DB_HOST=taskflow_db
+DB_PORT=your_db_port
+DB_NAME=your_db_name
+DB_USER=your_db_name
+DB_PASSWORD=your_db_password
+
+#### Frontend
+Create `.env `file in `TaskFlow-Frontend/`and update the base-url as needed:
+
+VITE_API_URL=http://localhost:8080/api
+
 # Backend Setup
 
 ```bash
