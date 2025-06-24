@@ -12,7 +12,6 @@ public class UserMapper {
                 .password(dto.getPassword())
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
-                .image(dto.getImage())
                 .roles(dto.getRoles())
                 .build();
     }
@@ -24,7 +23,6 @@ public class UserMapper {
                 .password(user.getPassword())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .image(user.getImage())
                 .roles(user.getRoles())
                 .build();
     }
